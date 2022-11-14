@@ -1,0 +1,80 @@
+﻿@model FordWare.Models.ViewModels.ProjectViewModel
+@{
+    ViewData["Title"] = "Admin - Edit Project";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" class="g-3" asp-action="Edit" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                <input asp-for="Project.Id" hidden />
+                <input asp-for="Project.ImageURL" hidden />
+                <h2 class="text-primary">Edit Project</h2>
+                <div class="col-md-6">
+                    <label asp-for="Project.Title" class="form-label"></label>
+                    <input asp-for="Project.Title" type="text" class="form-control">
+                    <span asp-validation-for="Project.Title" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Project.Description" class="form-label"></label>
+                    <input asp-for="Project.Description" type="text" class="form-control">
+                    <span asp-validation-for="Project.Description" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Project.ImageURL" class="form-label"></label>
+                    <input asp-for="Project.ImageURL" type="file" name="projectImage" class="form-control">
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Project.LinkToProject" class="form-label"></label>
+                    <input asp-for="Project.LinkToProject" type="text" class="form-control">
+                    <span asp-validation-for="Project.LinkToProject" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Project.OriginalPrice" class="form-label"></label>
+                    <input asp-for="Project.OriginalPrice" type="text" class="form-control">
+                    <span asp-validation-for="Project.OriginalPrice" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Project.AmountPaid" class="form-label"></label>
+                    <input asp-for="Project.AmountPaid" type="text" class="form-control">
+                    <span asp-validation-for="Project.AmountPaid" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Project.RemainingBalance" class="form-label"></label>
+                    <input asp-for="Project.RemainingBalance" type="text" class="form-control">
+                    <span asp-validation-for="Project.RemainingBalance" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Project.CompanyId" class="form-label"></label>
+                    <select asp-for="Project.CompanyId" asp-items="Model.CompanyList" class="form-control">
+                        <option disabled selected>--Select Company</option>
+                    </select>
+                    <span asp-validation-for="Project.CompanyId" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Project.CategoryId" class="form-label"></label>
+                    <select asp-for="Project.CategoryId" asp-items="Model.CategoryList" class="form-control">
+                        <option disabled selected>--Select Category</option>
+                    </select>
+                    <span asp-validation-for="Project.CategoryId" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <button id="update_project_button" type="submit" class="btn btn-primary">Update</button>
+                    <a asp-controller="Project" asp-action="Index" class="btn btn-secondary">Back to list</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <img src="@Model.Project.ImageURL" class="img-thumbnail" />
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    <script type="text/javascript" src="~/js/projects.js"></script>
+    }
+

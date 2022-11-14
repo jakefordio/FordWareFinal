@@ -1,0 +1,45 @@
+﻿@model Company
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" class="row g-3" asp-action="Edit">
+    <h2 class="text-primary">Edit Company</h2>
+    <div class="col-md-6">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" type="text" class="form-control">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Address" class="form-label"></label>
+        <input asp-for="Address" type="text" class="form-control">
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="City" class="form-label"></label>
+        <input asp-for="City" type="text" class="form-control">
+        <span asp-validation-for="City" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="State" class="form-label"></label>
+        <input asp-for="State" type="text" class="form-control">
+        <span asp-validation-for="State" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Zip" class="form-label"></label>
+        <input asp-for="Zip" type="text" class="form-control">
+        <span asp-validation-for="Zip" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a asp-controller="Company" asp-action="Index" class="btn btn-secondary">Back to list</a>
+    </div>
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+    }
+

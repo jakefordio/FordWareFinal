@@ -11,5 +11,7 @@ namespace FordWare.Data
         }
 
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Project> Projects { get; set; }
     }
 }
