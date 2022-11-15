@@ -17,13 +17,12 @@
                     <span asp-validation-for="Project.Title" class="text-danger"></span>
                 </div>
                 <div class="col-md-6">
-                    <label asp-for="Project.Description" class="form-label"></label>
-                    <input asp-for="Project.Description" type="text" class="form-control">
-                    <span asp-validation-for="Project.Description" class="text-danger"></span>
-                </div>
-                <div class="col-md-6">
                     <label asp-for="Project.ImageURL" class="form-label"></label>
                     <input asp-for="Project.ImageURL" type="file" name="projectImage" class="form-control">
+                </div>
+                <div class="col-md-12">
+                    <label asp-for="Project.Description" class="form-label"></label>
+                    <textarea asp-for="Project.Description" class="form-control"></textarea>
                 </div>
                 <div class="col-md-6">
                     <label asp-for="Project.LinkToProject" class="form-label"></label>
@@ -75,6 +74,7 @@
     @{
         <partial name="_ValidationScriptsPartial" />
     }
+    <script type="text/javascript" src="~/lib/summernote/summernote.min.js"></script>
     <script type="text/javascript" src="~/js/projects.js"></script>
     }
 

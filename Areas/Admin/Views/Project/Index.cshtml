@@ -22,13 +22,13 @@
             <th scope="col">#</th>
             <th scope="col">Title</th>
             <th scope="col">Description</th>
-            <th scope="col">ImageURL</th>
+            <th scope="col">Image</th>
             <th scope="col">LinkToProject</th>
             <th scope="col">OriginalPrice</th>
             <th scope="col">AmountPaid</th>
             <th scope="col">RemainingBalance</th>
-            <th scope="col">CategoryId</th>
-            <th scope="col">CompanyId</th>
+            <th scope="col">Category</th>
+            <th scope="col">Company</th>
             <th></th>
         </tr>
     </thead>
@@ -38,7 +38,7 @@
             <tr>
                 <th scope="row">@project.Id</th>
                 <td>@project.Title</td>
-                <td>@project.Description</td>
+                <td>@Html.Raw(@project.Description)</td>
                 <td>
                     <img src="@project.ImageURL" class="img-thumbnail w-25">
                 </td>

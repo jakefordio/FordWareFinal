@@ -16,10 +16,11 @@ $(document).ready(function () {
         return true;
     });
 
+    //delete confirmation
     $('#admin_project_table').on('click', '#delete_project_button', function (e) {
         var projectID = $(this).data("projectid");
         Swal.fire({
-            title: 'Are you sure?',
+            title: 'Are you sure you want to delete this project?',
             text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
@@ -48,5 +49,5 @@ $(document).ready(function () {
     });
 
     //wysiwyg
-    //$('#Project_Description').summernote();
+    $('#Project_Description').summernote();
 });

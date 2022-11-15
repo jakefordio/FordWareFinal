@@ -10,12 +10,17 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using FordWare.Data;
+using FordWare.Models;
+using FordWare.StaticDetails;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
@@ -29,13 +34,17 @@ namespace FordWare.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ApplicationDbContext _dbContext;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManager,
+            ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +52,8 @@ namespace FordWare.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManager = roleManager;
+            _dbContext = dbContext;
         }
 
         /// <summary>
@@ -97,13 +108,54 @@ namespace FordWare.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            public string FirstName { get; set; }
+
+            [Required]
+            public string LastName { get; set; }
+
+            public string? PhoneNumber { get; set; }
+
+            public string? RoleName { get; set; }
+
+            [ValidateNever]
+            public IEnumerable<SelectListItem> RoleList { get; set; }
+
+            public int? CompanyId { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> CompanyList { get; set; }
         }
 
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+            bool clientRoleExists = await _roleManager.RoleExistsAsync(SD.Role_Client);
+            bool adminRoleExists = await _roleManager.RoleExistsAsync(SD.Role_Admin);
+            if (!clientRoleExists)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(SD.Role_Client));
+            }
+
+            if (!adminRoleExists)
+            {
+                await _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin));
+            }
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            Input = new InputModel()
+            {
+                RoleList = _roleManager.Roles.Select(r => r.Name).Select(i => new SelectListItem()
+                {
+                    Text = i,
+                    Value = i
+                }),
+                CompanyList = _dbContext.Companies.Select(c => new SelectListItem()
+                {
+                    Text = c.Name,
+                    Value = c.Id.ToString()
+                })
+            };
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -116,11 +168,28 @@ namespace FordWare.Areas.Identity.Pages.Account
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                user.FirstName = Input.FirstName;
+                user.LastName = Input.LastName;
+                user.PhoneNumber = Input.PhoneNumber;
+                if(Input.RoleName == SD.Role_Client)
+                {
+                    user.CompanyId = Input.CompanyId;
+                }
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    if(Input.RoleName == null)
+                    {
+                        await _userManager.AddToRoleAsync(user, SD.Role_Client);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, Input.RoleName);
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -154,11 +223,11 @@ namespace FordWare.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IdentityUser CreateUser()
+        private AppUser CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<IdentityUser>();
+                return Activator.CreateInstance<AppUser>();
             }
             catch
             {
